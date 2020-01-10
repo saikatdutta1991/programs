@@ -10,11 +10,10 @@
         }
 
         function fizzBuzz(n) {
-        
-            let fizzbuzz =  multipliers.reduce((res, multiplier) => {
-                return res + ( isDivisible(n, multiplier) ? options[multiplier] : "" );
-            }, "");
 
+            let fizzbuzz = multipliers.filter( multiplier => n % multiplier === 0)
+                                .map( multiplier => options[multiplier] )
+                                .join("");
             return fizzbuzz.length ? fizzbuzz : n; 
         }
 
@@ -31,7 +30,7 @@
 
 
 
-    var options  = { 3 : "Fizz", 5 : "Buzz", 7 : "Woff" };
+    var options  = { 3 : "Fizz", 5 : "Buzz", 7 : "Woff", 9 : "Toff" };
     var results = makeFizzBuzzLogger(50, options).run();
 
     console.log(results);
