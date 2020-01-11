@@ -10,6 +10,10 @@ function isOperator(operator) {
     return [ '+', '-', '*', '/' ].includes(operator);
 }
 
+/**
+ * reutrns a function based on operator symbol,
+ * returned function takes right and left operand and reutrns result value
+ */
 function operator(opt) {
 
     if('+' === opt) {
@@ -35,8 +39,13 @@ function operator(opt) {
 
 function evaluateExpression(exp) {
 
-    let stack = [];
+    let stack = []; // take a stack
 
+    /** Check each elements in expression,
+     * if element is opeator(+, - etc.) pop from stack two times, and evalute
+     * and push the result in stack back
+     * if element is not operator, push element to stack simple, do't do anything
+     */
     exp.forEach( e => {
 
         if(isOperator(e)) {
@@ -47,7 +56,8 @@ function evaluateExpression(exp) {
 
     });
 
-    return stack.pop();
+    // result will be stored in stack, and is the last element in stack left.
+    return stack.pop(); 
 
 }
 
