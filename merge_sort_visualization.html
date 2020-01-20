@@ -1,0 +1,162 @@
+<p>
+    Iterative Merge Sort
+    <input type="number" id="count" required value="100">
+    <button id="start">Start</button>
+</p>
+
+<canvas id="myCanvas">
+
+<script>
+
+function BarRenderer(canvasid, width, height, barsCount) {
+
+
+    this.randomColor = function() {
+        let letters = "0123456789ABCDEF"; 
+        return Array( 6 ).fill(0).reduce( color => color + letters[(Math.floor(Math.random() * 16))], "#" );
+    }
+
+    this.randomColors = function( count ) {
+        return Array( count ).fill(0).map( v => this.randomColor() );
+    }
+
+
+    this.canvas = document.getElementById( canvasid );
+    this.context = this.canvas.getContext( "2d" );
+    this.numberOfPartitions = ( 2 * barsCount ) + 1;
+    this.barColors = this.randomColors( barsCount );
+    this.canvasWidth = width;
+    this.canvasHeight = height;
+    this.barWidth = this.canvasWidth / this.numberOfPartitions;
+    this.heightPercentage = this.canvasHeight;
+    this.bars = [];
+
+
+    this.setCanvasStyle = function() {
+        this.canvas.setAttribute( "style", "border:1px solid #c3c3c3;transform: rotate(180deg) scaleX(-1);" );
+        this.canvas.setAttribute( "width", this.canvasWidth );
+        this.canvas.setAttribute( "height", this.canvasHeight );
+    }
+
+    this.getBarHeight = function( value ) {
+        return ( value / this.heightPercentage ) * this.canvasHeight;
+    }
+
+    this.setHeightPercentage = function( p ) {
+        this.heightPercentage = p;
+        return this;
+    } 
+
+    this.setBars = function( bs ) {
+        this.bars = bs;
+        return this;
+    } 
+
+
+    this.render = function() {
+
+        this.context.clearRect( 0, 0, this.canvasWidth, this.canvasHeight );
+
+        let gap = this.barWidth;
+        this.bars.forEach( ( bar, index ) => {
+
+            this.context.fillStyle = this.barColors[ index ];
+            this.context.fillRect(gap, 0, this.barWidth, this.getBarHeight( bar ) );
+            gap += 2 * this.barWidth;
+
+        });
+
+    }
+
+    this.setCanvasStyle();
+
+}
+
+function wait(time) {
+    return new Promise(function(resolve, reject){
+        setTimeout(() => {
+            resolve();
+        }, time);
+    });
+}
+
+
+function mergeSort(arr) {
+
+    let newArray = arr.map( x => x );
+
+    const sort = function*(low, high) {
+        if( low < high ) {
+            
+            let middle = parseInt( ( low + high ) / 2 ); 
+            yield * sort( low, middle );
+            yield * sort( middle + 1, high );
+            merge( low, middle, high );
+            yield newArray;
+        }
+
+        
+    };
+
+    const merge = async function(low, middle, high) {
+
+        let tempArr = [], 
+            i = low, 
+            j = middle + 1;
+
+        while( i <= middle && j <= high ) {
+            tempArr.push( newArray[ i ] < newArray[ j ] ? newArray[ i++ ] : newArray[ j++ ] );
+        }
+
+        while( i <= middle ) {
+            tempArr.push( newArray[ i++ ] );
+        }
+
+        while( j <= high ) {
+            tempArr.push( newArray[ j++ ] );
+        }
+
+        i = low;
+        tempArr.forEach( v => {
+            newArray[ i++ ] = v;
+        });
+
+    }
+
+
+    return sort( 0, newArray.length - 1 );
+    
+}
+
+
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min) ) + min;
+}
+
+
+
+
+
+
+async function start( n ){
+
+    let arr = Array.from({ length : n }, (x,i) => getRndInteger(1, n));
+    let barRenderer = new BarRenderer("myCanvas", window.innerWidth, 400, arr.length).setHeightPercentage( n );
+
+    for(let i of mergeSort( arr )) {
+        barRenderer.setBars( i ).render();
+        await wait(100);
+    }
+
+}
+
+
+document.getElementById('start').addEventListener("click", async function() {
+    this.setAttribute( "disabled", "true" );
+    await start( parseInt( document.getElementById('count').value ) );
+    this.setAttribute( "disabled", "false" );
+});
+
+
+</script>
