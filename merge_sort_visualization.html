@@ -2,7 +2,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <p>
     Iterative Merge Sort
-    <input type="number" id="count" required value="100">
+    <input type="number" id="count" required value="1000">
+    <input type="number" id="delay" required value="0" placeholder="delay">
     <button id="start">Start</button>
 </p>
 
@@ -141,14 +142,14 @@ function getRndInteger(min, max) {
 
 
 
-async function start( n ){
+async function start( n, delay ){
 
     let arr = Array.from({ length : n }, (x,i) => getRndInteger(1, n));
     let barRenderer = new BarRenderer("myCanvas", window.innerWidth, 400, arr.length).setHeightPercentage( n );
-
+    barRenderer.setBars( arr ).render();
     for(let i of mergeSort( arr )) {
         barRenderer.setBars( i ).render();
-        await wait(100);
+        await wait(delay);
     }
 
 }
@@ -156,7 +157,7 @@ async function start( n ){
 
 document.getElementById('start').addEventListener("click", async function() {
     this.setAttribute( "disabled", "true" );
-    await start( parseInt( document.getElementById('count').value ) );
+    await start( parseInt( document.getElementById('count').value ), parseInt( document.getElementById('delay').value ) );
     this.removeAttribute( "disabled" );
 });
 
