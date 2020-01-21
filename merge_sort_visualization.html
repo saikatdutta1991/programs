@@ -157,7 +157,7 @@ async function start( n ){
 document.getElementById('start').addEventListener("click", async function() {
     this.setAttribute( "disabled", "true" );
     await start( parseInt( document.getElementById('count').value ) );
-    this.setAttribute( "disabled", "false" );
+    this.removeAttribute( "disabled" );
 });
 
 
