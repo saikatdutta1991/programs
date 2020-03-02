@@ -1,5 +1,6 @@
 /**
  * Retry js module
+ * @author Saikat Dutta
  * Simulate retry strategies for failed operations
  * Example:
  * retry(fetch('https://google.com'), 3)
