@@ -75,7 +75,7 @@ const timeout = ms => new Promise(resolve => setTimeout(resolve, ms));
  */
 const retry = async (operation, times, delay) => {
   const promise = convert(operation); // converts operation into promise
-  console.log("times", times);
+  
   try {
     return await promise; // return promise resove on success
   } catch (err) {
