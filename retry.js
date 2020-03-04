@@ -45,7 +45,6 @@ const isFunction = operation => {
  */
 const convert = operation => {
   if (isPromise(operation)) {
-    argument;
     return operation;
   } else if (isAsyncFunction(operation)) {
     return type();
@@ -55,6 +54,9 @@ const convert = operation => {
     throw new Error("Unsupported parameter passed");
   }
 };
+
+/** async timeout */
+const timeout = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
  * Retry failed operations
@@ -67,17 +69,19 @@ const convert = operation => {
  *
  * @param {Promise|AsyncFunction|function} operation
  * @param {number} times execute the operation this many times on failure
+ * @param {number} delay It delays retry call in miliseconds
  * @return {Promise}
  * @throws {Error} on fails to create promise
  */
-const retry = async (operation, times) => {
+const retry = async (operation, times, delay) => {
   const promise = convert(operation); // converts operation into promise
-
+  console.log("times", times);
   try {
     return await promise; // return promise resove on success
   } catch (err) {
     if (times === 1) throw err; // throw error to caller if n tries fails
-    return await retry(promise, times - 1); // retry again if tries count not 1
+    await timeout(delay);
+    return await retry(promise, times - 1, delay); // retry again if tries count not 1
   }
 };
 
