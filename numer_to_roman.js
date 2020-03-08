@@ -86,15 +86,24 @@ function findScaleRange(scale, number) {
  * @returns {sting}
  */
 function convert(unit, range, scale) {
-  // check for unit whole divisible by middle and must be 1 or 2 or 3
-  const sc = unit / range.middle;
-  if (1 === sc || 2 === sc || 3 === sc) {
-    return repeat(scale[range.middle], sc);
+  // ex : 50
+  if (unit === range.middle) {
+    return scale[range.middle];
   }
 
-  /** check one less poissible, ex: 4 --> (5-1) --> IV */
-  const tc = (range.upper - unit) / range.lower;
-  if (tc === 1) {
+  // ex : 30 ---> 10 + 10 + 10
+  const ss = unit / range.middle;
+  if (1 === ss || 2 === ss || 3 === ss) {
+    return repeat(scale[range.middle], ss);
+  }
+
+  // ex : 40 --> 50 - 10 | range { lower : 5, middle : 10, upper : 50 }
+  if (range.upper - range.middle === unit) {
+    return scale[range.middle] + scale[range.upper];
+  }
+
+  // ex: 9 --> 10 - 1 | range { lower : 1, middle : 5, upper : 10 }
+  if (range.upper - range.lower === unit) {
     return scale[range.lower] + scale[range.upper];
   }
 
@@ -146,44 +155,111 @@ const scale = {
   1000: "M"
 };
 
-num = 80;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 90;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 100;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 5;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 4;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 3;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 1;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 900;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
-
-num = 2501;
-console.log(`${num} --> ${numToRoman(num, scale)}`);
+for (let i = 1; i < 100; i++) {
+  console.log(`${i} --> ${numToRoman(i, scale)}`);
+}
 
 
-/** 
-Sample output
-
-80 --> LXXX
-90 --> XC
-100 --> C
-5 --> V
-4 --> IV
-3 --> III
-1 --> I
-900 --> CM
-2501 --> MMDI
-**/
+/**
+ * sample output
+ * 
+ *  1 --> I
+    2 --> II
+    3 --> III
+    4 --> IV
+    5 --> V
+    6 --> VI
+    7 --> VII
+    8 --> VIII
+    9 --> IX
+    10 --> X
+    11 --> XI
+    12 --> XII
+    13 --> XIII
+    14 --> XIV
+    15 --> XV
+    16 --> XVI
+    17 --> XVII
+    18 --> XVIII
+    19 --> XIX
+    20 --> XX
+    21 --> XXI
+    22 --> XXII
+    23 --> XXIII
+    24 --> XXIV
+    25 --> XXV
+    26 --> XXVI
+    27 --> XXVII
+    28 --> XXVIII
+    29 --> XXIX
+    30 --> XXX
+    31 --> XXXI
+    32 --> XXXII
+    33 --> XXXIII
+    34 --> XXXIV
+    35 --> XXXV
+    36 --> XXXVI
+    37 --> XXXVII
+    38 --> XXXVIII
+    39 --> XXXIX
+    40 --> XL
+    41 --> XLI
+    42 --> XLII
+    43 --> XLIII
+    44 --> XLIV
+    45 --> XLV
+    46 --> XLVI
+    47 --> XLVII
+    48 --> XLVIII
+    49 --> XLIX
+    50 --> L
+    51 --> LI
+    52 --> LII
+    53 --> LIII
+    54 --> LIV
+    55 --> LV
+    56 --> LVI
+    57 --> LVII
+    58 --> LVIII
+    59 --> LIX
+    60 --> LX
+    61 --> LXI
+    62 --> LXII
+    63 --> LXIII
+    64 --> LXIV
+    65 --> LXV
+    66 --> LXVI
+    67 --> LXVII
+    68 --> LXVIII
+    69 --> LXIX
+    70 --> LXX
+    71 --> LXXI
+    72 --> LXXII
+    73 --> LXXIII
+    74 --> LXXIV
+    75 --> LXXV
+    76 --> LXXVI
+    77 --> LXXVII
+    78 --> LXXVIII
+    79 --> LXXIX
+    80 --> LXXX
+    81 --> LXXXI
+    82 --> LXXXII
+    83 --> LXXXIII
+    84 --> LXXXIV
+    85 --> LXXXV
+    86 --> LXXXVI
+    87 --> LXXXVII
+    88 --> LXXXVIII
+    89 --> LXXXIX
+    90 --> XC
+    91 --> XCI
+    92 --> XCII
+    93 --> XCIII
+    94 --> XCIV
+    95 --> XCV
+    96 --> XCVI
+    97 --> XCVII
+    98 --> XCVIII
+    99 --> XCIX
+ */
