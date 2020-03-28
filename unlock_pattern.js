@@ -115,21 +115,19 @@ function getPossibleKeys(key, pattern, keypad) {
   let possibleKeys = new Set();
 
   // Loop through all sides of current key
-  for (i in sides) {
-    const side = sides[i];
+  for (let side of sides) {
     const sideKey = key[side];
 
-    if (!sideKey) {
-      continue;
-    }
-
-    if (pattern.has(sideKey)) {
-      const tempKeys = getPossibleKeys(sideKey, pattern, keypad);
-      for (let k of tempKeys) {
-        possibleKeys.add(k);
+    if (sideKey) {
+      if (pattern.has(sideKey)) {
+        for (let side of sides) {
+          if (sideKey[side] && !pattern.has(sideKey[side])) {
+            possibleKeys.add(sideKey[side]);
+          }
+        }
+      } else {
+        possibleKeys.add(sideKey);
       }
-    } else {
-      possibleKeys.add(sideKey);
     }
   }
 
@@ -151,8 +149,7 @@ function recurseParttern(pLength, key, currPattern, patterns, keypad) {
 
   const pKeys = getPossibleKeys(key, currPattern, keypad);
   // console.log("pKeys", pKeys);
-  for (i in pKeys) {
-    const pkey = pKeys[i];
+  for (let pkey of pKeys) {
     currPattern.set(pkey, true);
     recurseParttern(pLength, pkey, currPattern, patterns, keypad);
     currPattern.delete(pkey);
