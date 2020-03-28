@@ -145,7 +145,7 @@ function getPossibleKeys(key, pattern, keypad) {
  * @param {Array} keypad of Keys. The keyboard keyGraph returned from buildKeypadGraph()
  */
 function recurseParttern(pLength, key, currPattern, patterns, keypad) {
-  if (currPattern.length === pLength) {
+  if (currPattern.size === pLength) {
     return console.log(readPatternNumbers(currPattern));
   }
 
@@ -153,7 +153,6 @@ function recurseParttern(pLength, key, currPattern, patterns, keypad) {
   // console.log("pKeys", pKeys);
   for (i in pKeys) {
     const pkey = pKeys[i];
-    console.log("pkey", pkey.num);
     currPattern.set(pkey, true);
     recurseParttern(pLength, pkey, currPattern, patterns, keypad);
     currPattern.delete(pkey);
@@ -165,18 +164,14 @@ function recurseParttern(pLength, key, currPattern, patterns, keypad) {
  * @param {Map} pattern Map of Keys
  */
 function readPatternNumbers(pattern) {
-  const numbers = [];
-  for (i in Array.from(pattern.keys)) {
-    numbers.push(pattern[i].num);
-  }
-
-  return numbers;
+  const patternKeys = Array.from(pattern.keys());
+  return patternKeys.map(k => k.num);
 }
 
 // main code
 const keypad = buildKeypadGraph();
 // console.log("keypad", Object.values(keypad));
-const pLength = 1;
+const pLength = 3;
 const key = null;
 const currPattern = new Map();
 const patterns = [];
