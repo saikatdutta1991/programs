@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unlock Pattern Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.7.1/svg.min.js"></script>
+    <script src="unlock_pattern.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      #drawing {
+        width: 400px;
+        border: 1px solid black;
+        height: 400px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      #form {
+        font-size: 30px;
+      }
+      #form button {
+        border: none;
+        display: inline-block;
+        padding: 8px 16px;
+        vertical-align: middle;
+        overflow: hidden;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+        white-space: nowrap;
+        color: #fff !important;
+        background-color: #4caf50 !important;
+      }
+      #form input {
+        padding: 8px;
+        display: inline-block;
+        border-bottom: 1px solid #ccc;
+        border: 1px solid #ccc !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="form">
+      <label>Length Of Each Pattern</label>
+      <input type="number" value="1" step="1" min="1" max="9" id="number" />
+      <label>Delay Each</label>
+      <input type="number" value="500" step="1" min="1" max="9" id="delay" />
+      <button onclick="makePatterns()">Make patterns</button>
+    </div>
+
+    <div id="drawing">
+      <div style="text-align: center;" id="list"></div>
+    </div>
+
+    <script>
+      class PatternBoard {
+        static boardImageURL =
+          "https://cdn3.iconfinder.com/data/icons/analytics-5/500/Analytics-45-512.png";
+        static pointsMap = {
+          1: [68, 60],
+          2: [199, 60],
+          3: [331, 60],
+          4: [68, 197],
+          5: [199, 197],
+          6: [331, 197],
+          7: [68, 332],
+          8: [199, 332],
+          9: [331, 332]
+        };
+
+        constructor(elem) {
+          this.draw = SVG(elem).size("100%", "100%");
+
+          this.image = this.draw
+            .image(this.constructor.boardImageURL)
+            .size("100%", "100%");
+
+          this.polyline = this.draw
+            .polyline([[0, 0]])
+            .fill("none")
+            .stroke({
+              color: "#f06",
+              width: 20,
+              linecap: "round",
+              linejoin: "round"
+            });
+        }
+
+        drawPattern(numbers) {
+          if (!Array.isArray(numbers)) {
+            throw new Error(
+              "drawPattern numbers must be array of numbers between 1-9"
+            );
+          }
+          let points = [];
+
+          if (numbers.length == 1) {
+            const p = numbers[0];
+            points.push(this.constructor.pointsMap[p]);
+            points.push(this.constructor.pointsMap[p]);
+          } else {
+            points = numbers.map(n => this.constructor.pointsMap[n]);
+          }
+
+          this.polyline.plot(points);
+        }
+      }
+
+      function wait(time) {
+        return new Promise(function(resolve, reject) {
+          setTimeout(() => {
+            resolve();
+          }, time);
+        });
+      }
+
+      const board = new PatternBoard("drawing");
+      const maker = new PatternMaker();
+
+      async function makePatterns() {
+        const number = parseInt(document.getElementById("number").value);
+        const delay = parseInt(document.getElementById("delay").value);
+        const pGenerator = maker.getGenerator(number);
+        const listElem = document.getElementById("list");
+        for (let arr of pGenerator) {
+          listElem.innerText = "[ " + arr.join(", ") + " ]";
+          board.drawPattern(arr);
+          await wait(delay);
+        }
+        board.drawPattern([]);
+      }
+    </script>
+  </body>
+</html>
