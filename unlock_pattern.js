@@ -6,13 +6,9 @@ class Key {
 }
 
 class PatternMaker {
-  /**
-   * Builds the keypad graph
-   * It represents the paths of each key
-   */
-  _buildKeypadGraph() {
+  get _keypad() {
     /** List of all keys  */
-    const keypad = {
+    return {
       1: new Key(1),
       2: new Key(2),
       3: new Key(3),
@@ -23,8 +19,58 @@ class PatternMaker {
       8: new Key(8),
       9: new Key(9)
     };
-    // mapping paths of each key
+  }
 
+  _keyLiesBetween(key1, key2) {
+    if ((key1.num == 1 && key2.num == 3) || (key1.num == 3 && key2.num == 1)) {
+      return this._keypad[2];
+    } else if (
+      (key1.num == 1 && key2.num == 7) ||
+      (key1.num == 7 && key2.num == 1)
+    ) {
+      return this._keypad[4];
+    } else if (
+      (key1.num == 1 && key2.num == 9) ||
+      (key1.num == 9 && key2.num == 1)
+    ) {
+      return this._keypad[5];
+    } else if (
+      (key1.num == 2 && key2.num == 8) ||
+      (key1.num == 8 && key2.num == 2)
+    ) {
+      return this._keypad[5];
+    } else if (
+      (key1.num == 3 && key2.num == 7) ||
+      (key1.num == 7 && key2.num == 3)
+    ) {
+      return this._keypad[5];
+    } else if (
+      (key1.num == 4 && key2.num == 6) ||
+      (key1.num == 6 && key2.num == 4)
+    ) {
+      return this._keypad[5];
+    } else if (
+      (key1.num == 7 && key2.num == 9) ||
+      (key1.num == 9 && key2.num == 7)
+    ) {
+      return this._keypad[8];
+    } else if (
+      (key1.num == 3 && key2.num == 9) ||
+      (key1.num == 9 && key2.num == 3)
+    ) {
+      return this._keypad[6];
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Builds the keypad graph
+   * It represents the paths of each key
+   */
+  _buildKeypadGraph() {
+    // mapping paths of each key
+    const keypad = this._keypad;
     // for key1
     keypad[1].right = keypad[2];
     keypad[1].bottomRight = keypad[5];
@@ -123,7 +169,10 @@ class PatternMaker {
       if (sideKey) {
         if (pattern.has(sideKey)) {
           for (let side of this.sides) {
-            if (sideKey[side] && !pattern.has(sideKey[side])) {
+            if (
+              sideKey[side] &&
+              pattern.has(this._keyLiesBetween(sideKey, sideKey[side]))
+            ) {
               possibleKeys.add(sideKey[side]);
             }
           }
