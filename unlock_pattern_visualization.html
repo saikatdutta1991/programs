@@ -137,6 +137,7 @@
         const listElem = document.getElementById("list");
         for (let arr of pGenerator) {
           listElem.innerText = "[ " + arr.join(", ") + " ]";
+          console.log(arr);
           board.drawPattern(arr);
           await wait(delay);
         }
