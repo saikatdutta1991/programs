@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sudoku Board Visualization</title>
+    <style>
+      .board {
+        position: relative;
+      }
+      .row {
+        display: inline-block;
+      }
+      .col {
+        width: 50px;
+        height: 50px;
+        background-color: #b0a8b9;
+        display: inline-block;
+        position: relative;
+      }
+      .c-value {
+        display: table-cell;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 27px;
+        font-weight: bold;
+      }
+
+      .group {
+        border: 3px solid black;
+        width: 158px;
+        height: 158px;
+        position: absolute;
+      }
+      #group-1 {
+        left: -3px;
+        top: -3px;
+      }
+
+      #group-2 {
+        left: 159px;
+        top: -3px;
+      }
+
+      #group-3 {
+        left: 321px;
+        top: -3px;
+      }
+
+      #group-4 {
+        left: -3px;
+        top: 159px;
+      }
+
+      #group-5 {
+        left: 159px;
+        top: 159px;
+      }
+
+      #group-6 {
+        left: 321px;
+        top: 159px;
+      }
+
+      #group-7 {
+        left: -3px;
+        top: 321px;
+      }
+
+      #group-8 {
+        left: 159px;
+        top: 321px;
+      }
+
+      #group-9 {
+        left: 321px;
+        top: 321px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="board">
+      <div class="group" id="group-1"></div>
+      <div class="group" id="group-2"></div>
+      <div class="group" id="group-3"></div>
+      <div class="group" id="group-4"></div>
+      <div class="group" id="group-5"></div>
+      <div class="group" id="group-6"></div>
+      <div class="group" id="group-7"></div>
+      <div class="group" id="group-8"></div>
+      <div class="group" id="group-9"></div>
+      <div class="row">
+        <div class="col" id="c-1-1"><span class="c-value"></span></div>
+        <div class="col" id="c-1-2"><span class="c-value"></span></div>
+        <div class="col" id="c-1-3"><span class="c-value"></span></div>
+        <div class="col" id="c-1-4"><span class="c-value"></span></div>
+        <div class="col" id="c-1-5"><span class="c-value"></span></div>
+        <div class="col" id="c-1-6"><span class="c-value"></span></div>
+        <div class="col" id="c-1-7"><span class="c-value"></span></div>
+        <div class="col" id="c-1-8"><span class="c-value"></span></div>
+        <div class="col" id="c-1-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-2-1"><span class="c-value"></span></div>
+        <div class="col" id="c-2-2"><span class="c-value"></span></div>
+        <div class="col" id="c-2-3"><span class="c-value"></span></div>
+        <div class="col" id="c-2-4"><span class="c-value"></span></div>
+        <div class="col" id="c-2-5"><span class="c-value"></span></div>
+        <div class="col" id="c-2-6"><span class="c-value"></span></div>
+        <div class="col" id="c-2-7"><span class="c-value"></span></div>
+        <div class="col" id="c-2-8"><span class="c-value"></span></div>
+        <div class="col" id="c-2-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-3-1"><span class="c-value"></span></div>
+        <div class="col" id="c-3-2"><span class="c-value"></span></div>
+        <div class="col" id="c-3-3"><span class="c-value"></span></div>
+        <div class="col" id="c-3-4"><span class="c-value"></span></div>
+        <div class="col" id="c-3-5"><span class="c-value"></span></div>
+        <div class="col" id="c-3-6"><span class="c-value"></span></div>
+        <div class="col" id="c-3-7"><span class="c-value"></span></div>
+        <div class="col" id="c-3-8"><span class="c-value"></span></div>
+        <div class="col" id="c-3-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-4-1"><span class="c-value"></span></div>
+        <div class="col" id="c-4-2"><span class="c-value"></span></div>
+        <div class="col" id="c-4-3"><span class="c-value"></span></div>
+        <div class="col" id="c-4-4"><span class="c-value"></span></div>
+        <div class="col" id="c-4-5"><span class="c-value"></span></div>
+        <div class="col" id="c-4-6"><span class="c-value"></span></div>
+        <div class="col" id="c-4-7"><span class="c-value"></span></div>
+        <div class="col" id="c-4-8"><span class="c-value"></span></div>
+        <div class="col" id="c-4-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-5-1"><span class="c-value"></span></div>
+        <div class="col" id="c-5-2"><span class="c-value"></span></div>
+        <div class="col" id="c-5-3"><span class="c-value"></span></div>
+        <div class="col" id="c-5-4"><span class="c-value"></span></div>
+        <div class="col" id="c-5-5"><span class="c-value"></span></div>
+        <div class="col" id="c-5-6"><span class="c-value"></span></div>
+        <div class="col" id="c-5-7"><span class="c-value"></span></div>
+        <div class="col" id="c-5-8"><span class="c-value"></span></div>
+        <div class="col" id="c-5-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-6-1"><span class="c-value"></span></div>
+        <div class="col" id="c-6-2"><span class="c-value"></span></div>
+        <div class="col" id="c-6-3"><span class="c-value"></span></div>
+        <div class="col" id="c-6-4"><span class="c-value"></span></div>
+        <div class="col" id="c-6-5"><span class="c-value"></span></div>
+        <div class="col" id="c-6-6"><span class="c-value"></span></div>
+        <div class="col" id="c-6-7"><span class="c-value"></span></div>
+        <div class="col" id="c-6-8"><span class="c-value"></span></div>
+        <div class="col" id="c-6-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-7-1"><span class="c-value"></span></div>
+        <div class="col" id="c-7-2"><span class="c-value"></span></div>
+        <div class="col" id="c-7-3"><span class="c-value"></span></div>
+        <div class="col" id="c-7-4"><span class="c-value"></span></div>
+        <div class="col" id="c-7-5"><span class="c-value"></span></div>
+        <div class="col" id="c-7-6"><span class="c-value"></span></div>
+        <div class="col" id="c-7-7"><span class="c-value"></span></div>
+        <div class="col" id="c-7-8"><span class="c-value"></span></div>
+        <div class="col" id="c-7-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-8-1"><span class="c-value"></span></div>
+        <div class="col" id="c-8-2"><span class="c-value"></span></div>
+        <div class="col" id="c-8-3"><span class="c-value"></span></div>
+        <div class="col" id="c-8-4"><span class="c-value"></span></div>
+        <div class="col" id="c-8-5"><span class="c-value"></span></div>
+        <div class="col" id="c-8-6"><span class="c-value"></span></div>
+        <div class="col" id="c-8-7"><span class="c-value"></span></div>
+        <div class="col" id="c-8-8"><span class="c-value"></span></div>
+        <div class="col" id="c-8-9"><span class="c-value"></span></div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col" id="c-9-1"><span class="c-value"></span></div>
+        <div class="col" id="c-9-2"><span class="c-value"></span></div>
+        <div class="col" id="c-9-3"><span class="c-value"></span></div>
+        <div class="col" id="c-9-4"><span class="c-value"></span></div>
+        <div class="col" id="c-9-5"><span class="c-value"></span></div>
+        <div class="col" id="c-9-6"><span class="c-value"></span></div>
+        <div class="col" id="c-9-7"><span class="c-value"></span></div>
+        <div class="col" id="c-9-8"><span class="c-value"></span></div>
+        <div class="col" id="c-9-9"><span class="c-value"></span></div>
+      </div>
+    </div>
+    <label for="">Render speed:</label>
+    <input type="number" value="0" id="speed" />
+    <button onclick="startSolving()">Start solving</button>
+    <br />
+    <label for="">Board input</label>
+    <br />
+    <textarea name="" id="board-input" cols="50" rows="10"></textarea>
+    <script>
+      document.querySelector("#board-input").value = JSON.stringify([
+        ["5", "3", ".", ".", "7", ".", ".", ".", "."],
+        ["6", ".", ".", "1", "9", "5", ".", ".", "."],
+        [".", "9", "8", ".", ".", ".", ".", "6", "."],
+        ["8", ".", ".", ".", "6", ".", ".", ".", "3"],
+        ["4", ".", ".", "8", ".", "3", ".", ".", "1"],
+        ["7", ".", ".", ".", "2", ".", ".", ".", "6"],
+        [".", "6", ".", ".", ".", ".", "2", "8", "."],
+        [".", ".", ".", "4", "1", "9", ".", ".", "5"],
+        [".", ".", ".", ".", "8", ".", ".", "7", "9"],
+      ]);
+    </script>
+    <script>
+      let speed = 0;
+      function wait(time) {
+        return new Promise(function (resolve, reject) {
+          setTimeout(() => {
+            resolve();
+          }, time);
+        });
+      }
+
+      function renderBoard(board) {
+        board.forEach((row, i) =>
+          row.forEach(
+            (value, j) =>
+              (document.querySelector(
+                `.board #c-${i + 1}-${j + 1} .c-value`
+              ).innerText = value === -1 ? "" : value)
+          )
+        );
+      }
+    </script>
+    <script>
+      "use strict";
+      class SudokuSolver {
+        constructor(input) {
+          this.MIN_CELL_NUMBER = 1;
+          this.MAX_CELL_NUMBER = 9;
+          this.MIN_ROW_INDEX = 0;
+          this.MAX_ROW_INDEX = 8;
+          this.MIN_COL_INDEX = 0;
+          this.MAX_COL_INDEX = 8;
+          this.EMPTY_CELL_VALUE = -1;
+          this.initBoard(input);
+        }
+        initBoard(input) {
+          const tempBoard = JSON.parse(JSON.stringify(input));
+          tempBoard.forEach2DArray((row, col) => {
+            tempBoard[row][col] =
+              parseInt(tempBoard[row][col]) || this.EMPTY_CELL_VALUE;
+          });
+          this.board = tempBoard;
+        }
+        async findSolution() {
+          const [startingRow, startingCol] = this.findNextEmptyCell();
+          renderBoard(this.board);
+          this.shouldRender = true;
+          await this.findAndPutNumber(startingRow, startingCol);
+        }
+        async findAndPutNumber(row, col) {
+          if (row === -1 || col === -1) {
+            this.shouldRender = false;
+            console.log("shouldRender", this.shouldRender);
+            return;
+          }
+          for (
+            let num = this.MIN_CELL_NUMBER;
+            num <= this.MAX_CELL_NUMBER;
+            num++
+          ) {
+            if (this.canPutNumber(row, col, num)) {
+              this.board[row][col] = num;
+
+              if (this.shouldRender === true) {
+                document.querySelector(
+                  `.board #c-${row + 1}-${col + 1} .c-value`
+                ).innerText = num;
+              }
+
+              await wait(speed);
+
+              const nextEmptyCell = this.findNextEmptyCell(row, col);
+              await this.findAndPutNumber(nextEmptyCell[0], nextEmptyCell[1]);
+              this.board[row][col] = this.EMPTY_CELL_VALUE;
+
+              if (this.shouldRender === true) {
+                document.querySelector(
+                  `.board #c-${row + 1}-${col + 1} .c-value`
+                ).innerText = "";
+              }
+            }
+          }
+        }
+        canPutNumber(row, col, num) {
+          return (
+            !this.hasNumberInSubgrid(row, col, num) &&
+            !this.hasNumberInVertical(col, num) &&
+            !this.hasNumberInHorizontal(row, num)
+          );
+        }
+        hasNumberInSubgrid(row, col, value) {
+          const subgridBoundary = this.findSubgridBoundary(row, col);
+          let found = false;
+          for (
+            let i = subgridBoundary.row.min;
+            i <= subgridBoundary.row.max;
+            i++
+          ) {
+            for (
+              let j = subgridBoundary.col.min;
+              j <= subgridBoundary.col.max;
+              j++
+            ) {
+              if (this.board[i][j] === value) {
+                found = true;
+                break;
+              }
+            }
+          }
+          return !!found;
+        }
+        findSubgridBoundary(row, col) {
+          if (row >= 0 && row <= 2) {
+            if (col >= 0 && col <= 2) {
+              return {
+                row: {
+                  min: 0,
+                  max: 2,
+                },
+                col: {
+                  min: 0,
+                  max: 2,
+                },
+              };
+            } else if (col >= 3 && col <= 5) {
+              return {
+                row: {
+                  min: 0,
+                  max: 2,
+                },
+                col: {
+                  min: 3,
+                  max: 5,
+                },
+              };
+            } else if (col >= 6 && col <= 8) {
+              return {
+                row: {
+                  min: 0,
+                  max: 2,
+                },
+                col: {
+                  min: 6,
+                  max: 8,
+                },
+              };
+            }
+          } else if (row >= 3 && row <= 5) {
+            if (col >= 0 && col <= 2) {
+              return {
+                row: {
+                  min: 3,
+                  max: 5,
+                },
+                col: {
+                  min: 0,
+                  max: 2,
+                },
+              };
+            } else if (col >= 3 && col <= 5) {
+              return {
+                row: {
+                  min: 3,
+                  max: 5,
+                },
+                col: {
+                  min: 3,
+                  max: 5,
+                },
+              };
+            } else if (col >= 6 && col <= 8) {
+              return {
+                row: {
+                  min: 3,
+                  max: 5,
+                },
+                col: {
+                  min: 6,
+                  max: 8,
+                },
+              };
+            }
+          } else if (row >= 6 && row <= 8) {
+            if (col >= 0 && col <= 2) {
+              return {
+                row: {
+                  min: 6,
+                  max: 8,
+                },
+                col: {
+                  min: 0,
+                  max: 2,
+                },
+              };
+            } else if (col >= 3 && col <= 5) {
+              return {
+                row: {
+                  min: 6,
+                  max: 8,
+                },
+                col: {
+                  min: 3,
+                  max: 5,
+                },
+              };
+            } else if (col >= 6 && col <= 8) {
+              return {
+                row: {
+                  min: 6,
+                  max: 8,
+                },
+                col: {
+                  min: 6,
+                  max: 8,
+                },
+              };
+            }
+          }
+        }
+        hasNumberInVertical(fixedColumn, value) {
+          let found = false;
+          for (let row = this.MIN_ROW_INDEX; row <= this.MAX_ROW_INDEX; row++) {
+            if (this.board[row][fixedColumn] === value) {
+              found = true;
+              break;
+            }
+          }
+          return !!found;
+        }
+        hasNumberInHorizontal(fixRow, value) {
+          let found = false;
+          for (let col = this.MIN_COL_INDEX; col <= this.MAX_COL_INDEX; col++) {
+            if (this.board[fixRow][col] === value) {
+              found = true;
+              break;
+            }
+          }
+          return !!found;
+        }
+        findNextEmptyCell(row = 0, col = -1) {
+          let jValue = col + 1;
+          for (let i = row; i <= this.MAX_ROW_INDEX; i++) {
+            for (let j = jValue; j <= this.MAX_COL_INDEX; j++) {
+              if (this.board[i][j] === -1) {
+                return [i, j];
+              }
+            }
+            jValue = this.MIN_COL_INDEX;
+          }
+          return [-1, -1];
+        }
+      }
+      var ForEach2DArrayCBResponse;
+      (function (ForEach2DArrayCBResponse) {
+        ForEach2DArrayCBResponse[(ForEach2DArrayCBResponse["BREAK"] = 0)] =
+          "BREAK";
+        ForEach2DArrayCBResponse[(ForEach2DArrayCBResponse["SUCCESS"] = 1)] =
+          "SUCCESS";
+      })(ForEach2DArrayCBResponse || (ForEach2DArrayCBResponse = {}));
+      Array.prototype.forEach2DArray = function (cb) {
+        let breakLoop = false;
+        const rowSize = this.length;
+        for (let row = 0; row < rowSize; row++) {
+          const colSize = this[row].length;
+          for (let col = 0; col < colSize; col++) {
+            const response = cb.apply(this, [row, col, this[row][col]]);
+            if (response === ForEach2DArrayCBResponse.BREAK) {
+              breakLoop = true;
+              break;
+            }
+          }
+          if (breakLoop) {
+            break;
+          }
+        }
+      };
+    </script>
+    <script>
+      function startSolving() {
+        speed = parseInt(document.querySelector("#speed").value);
+        const solver = new SudokuSolver(
+          JSON.parse(document.querySelector("#board-input").value)
+        );
+        solver.findSolution().then(() => alert("Solved!!"));
+      }
+
+      boardi;
+    </script>
+  </body>
+</html>
