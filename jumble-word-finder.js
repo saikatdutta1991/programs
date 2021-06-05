@@ -2,52 +2,21 @@
 
 const https = require('https');
 
-// 1. HTNXAAR
-// 2. ERXLFE
-// 3. MCXOPEL
-// 4. FNUIXL
-// 5. ARXLYN
-// 6. PXELUD
-// 7. PNEXAIPD
-// 8. NIACMITLXA
-// 9. EHOPXIN
-// 10. ARALPLXA
-// 11. FRCUIXIC
-// 12. EUMXLITLP
-// 13. MFXLOUM
-// 14. OVNEXC
-// 15. NPXYHRA
-// 16. EXTBHCATOR
-// 17. HXODROTO
-// 18. QINEUXO
-// 19. NPXSYH
-// 20. LXPPREE
-// 21. AXYNST
-// 22. IXCAML
-
-const word = 'HTNXAAR';
-findCorrectWord(word)
-  .then((correctWord) =>
-    console.log(`Correct word of ${word} is ${correctWord}`)
-  )
-  .catch((error) => console.log({ error }));
-
-async function findCorrectWord(jumbleWord) {
-  const combinations = findEachCombinationsOfWord(jumbleWord);
-  for (const word of combinations) {
-    console.log(`Checking if word combination is valid for: ${word}`);
-    if (await isWordValid(word)) {
-      return word;
+function findCorrectWordFromJumbleString(jumbleString, dictionary) {
+  const combinations = findEachCombinationsOfString(jumbleString);
+  for (const str of combinations) {
+    if (dictionary.isValidWord(str)) {
+      return str;
     }
   }
 
-  throw new Error(`No correct word found for ${word}`);
+  throw new Error(`No correct word found for ${jumbleString}`);
 }
 
-function findEachCombinationsOfWord(word) {
+function findEachCombinationsOfString(str) {
   const output = [];
-  findCombinations(word.split(''), 0, [], output);
-  return output.map((wordArray) => wordArray.join(''));
+  findCombinations(str.split(''), 0, [], output);
+  return output.map((strArray) => strArray.join(''));
 }
 
 function findCombinations(
@@ -76,31 +45,81 @@ function findCombinations(
   }
 }
 
-async function isWordValid(word) {
-  const response = await geFromDictionary(word);
-  return !!(response && response[0] && response[0].word);
+class Dictionary {
+  constructor() {
+    this.wordsMap = {};
+  }
+
+  async init() {
+    console.log(`Initializing dictionary..`);
+    this.wordsMap = await this.downloadDictionary();
+    console.log(`Dictionary initialized.`);
+  }
+
+  downloadDictionary() {
+    return new Promise((resolve, reject) => {
+      const options = {
+        hostname: 'raw.githubusercontent.com',
+        port: 443,
+        path: `/dwyl/english-words/master/words_dictionary.json`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      };
+
+      const req = https.request(options, (res) => {
+        let body = '';
+        res.on('data', (chunk) => (body += chunk));
+        res.on('end', () => resolve(JSON.parse(body)));
+      });
+      req.on('error', (error) => {
+        reject(error);
+      });
+      req.end();
+    });
+  }
+
+  isValidWord(word) {
+    return !!this.wordsMap[word.toLowerCase()];
+  }
 }
 
-function geFromDictionary(word) {
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.dictionaryapi.dev',
-      port: 443,
-      path: `/api/v2/entries/en/${word}`,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+(async () => {
+  const dictionary = new Dictionary();
+  await dictionary.init();
 
-    const req = https.request(options, (res) => {
-      let body = '';
-      res.on('data', (chunk) => (body += chunk));
-      res.on('end', () => resolve(JSON.parse(body)));
-    });
-    req.on('error', (error) => {
-      reject(error);
-    });
-    req.end();
+  const strings = [
+    'HTNXAAR',
+    'ERXLFE',
+    'MCXOPEL',
+    'FNUIXL',
+    'ARXLYN',
+    'PXELUD',
+    'PNEXAIPD',
+    'NIACMITLXA',
+    'EHOPXIN',
+    'ARALPLXA',
+    'FRCUIXIC',
+    'EUMXLITLP',
+    'MFXLOUM',
+    'OVNEXC',
+    'NPXYHRA',
+    'EXTBHCATOR',
+    'HXODROTO',
+    'QINEUXO',
+    'NPXSYH',
+    'LXPPREE',
+    'AXYNST',
+    'IXCAML',
+  ];
+
+  strings.forEach((str) => {
+    try {
+      const correctWord = findCorrectWordFromJumbleString(str, dictionary);
+      console.log(`${str} => ${correctWord}`);
+    } catch (error) {
+      console.log({ error });
+    }
   });
-}
+})();
