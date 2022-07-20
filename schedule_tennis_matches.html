@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule Tennis Matches</title>
+  </head>
+  <body>
+    <p>Question:</p>
+    <h4>
+      A Tennis association organises a Tennis tournament every year, in that
+      tournament the number of people participating will vary every year.
+      Imagine every person has to play with every other person in the first
+      round, there will be a limited number of grounds and limited time slots.
+      Please write a Java program to generate the schedule for it in such a way
+      that there should not be 2 games happening in the same ground at the same
+      time.
+      <h5>
+        1. Input: Start Date of the Tournament, Number of People, number of
+        grounds, Array of time slots
+      </h5>
+      <h5>2. Output: Schedule for first Round Sample</h5>
+      <!-- Result: Input: 15/11/2020, 4, 2, [9:00 AM, 2:00 PM] <br />
+      Output: <br />Person 1 vs Person 2 at Ground 1 on 15/11/2020 at 9:00 AM
+      <br />Person 3 vs Person 4 at Ground 2 on 15/11/2020 at 9:00 AM
+      <br />Person 1 vs Person 3 at Ground 1 on 15/11/2020 at 2:00 PM
+      <br />Person 2 vs Person 4 at Ground 2 on 15/11/2020 at 2:00 PM
+      <br />Person 1 vs Person 4 at Ground 1 on 16/11/2020 at 9:00 AM
+      <br />Person 2 vs Person 3 at Ground 2 on 16/11/2020 at 9:00 AM
+    </h4> -->
+    <hr />
+    Start date:<input type="text" value="2022-11-15" id="start-date" /><br />
+    No of players:<input type="number" value="4" id="no-of-players" /><br />
+    No of grounds:<input type="number" value="2" id="no-of-grounds" /><br />
+    Comma separated times:<input
+      type="text"
+      value="09:00,14:00"
+      id="comma-separated-times"
+    /><br />
+    <button onclick="parseInputAndCalculateAndShow()">Calculate</button><br />
+    Output: <br />
+    <div id="output"></div>
+  </body>
+  <script>
+    function parseInputAndCalculateAndShow() {
+      const output = doCalculate({
+        start: document.querySelector("#start-date").value,
+        noOfPlayers: parseInt(
+          document.querySelector("#no-of-players").value,
+          10
+        ),
+        noOfGrounds: parseInt(
+          document.querySelector("#no-of-grounds").value,
+          10
+        ),
+        times: document
+          .querySelector("#comma-separated-times")
+          .value.split(","),
+      });
+
+      document.querySelector("#output").innerHTML =
+        getFormatedOutputHTML(output);
+    }
+
+    function doCalculate(input) {
+      console.log(input, "input");
+      const players = generatePlayers(input.noOfPlayers);
+      const playerGroups = generatePlayerGroups(players);
+      const grounds = generateGrounds(input.noOfGrounds);
+      const groundTimeDateGroups = generateGroundAndTimeGroupsWithDate({
+        playerGroups,
+        grounds,
+        times: input.times,
+        start: input.start,
+      });
+      for (let i = 0; i < playerGroups.length; i++) {
+        const playerGroup = playerGroups[i];
+        const groundTimeDateGroup = findGroundTimeDateGroup(
+          playerGroup,
+          groundTimeDateGroups
+        );
+        if (groundTimeDateGroup) {
+          groundTimeDateGroup.firstPlayer = playerGroup.firstPlayer;
+          groundTimeDateGroup.secondPlayer = playerGroup.secondPlayer;
+          groundTimeDateGroup.isAssigned = true;
+        }
+      }
+      return groundTimeDateGroups;
+    }
+
+    ///
+
+    function getFormatedOutputHTML(groundTimeDateGroups) {
+      return groundTimeDateGroups
+        .filter((g) => g.isAssigned)
+        .map(
+          (g) =>
+            `Person ${g.firstPlayer} vs Person ${g.secondPlayer} at Ground ${g.ground} on ${g.date} at ${g.time}`
+        )
+        .join("<br>");
+    }
+
+    function findGroundTimeDateGroup(playerGroup, groundTimeDateGroups) {
+      const nonAssignedGroundTimeDateGroups = groundTimeDateGroups.filter(
+        (g) => !g.isAssigned
+      );
+      for (let i = 0; i < nonAssignedGroundTimeDateGroups.length; i++) {
+        const groundTimeDateGroup = nonAssignedGroundTimeDateGroups[i];
+        if (
+          canPlayerGroupBeAssigned({
+            playerGroup,
+            groundTimeDateGroup,
+            groundTimeDateGroups,
+          })
+        ) {
+          return groundTimeDateGroup;
+        }
+      }
+    }
+
+    function canPlayerGroupBeAssigned({
+      playerGroup,
+      groundTimeDateGroup,
+      groundTimeDateGroups,
+    }) {
+      return (
+        isPlayerNotAssignedToGround({
+          player: playerGroup.firstPlayer,
+          date: groundTimeDateGroup.date,
+          time: groundTimeDateGroup.time,
+          groundTimeDateGroups,
+        }) &&
+        isPlayerNotAssignedToGround({
+          player: playerGroup.secondPlayer,
+          date: groundTimeDateGroup.date,
+          time: groundTimeDateGroup.time,
+          groundTimeDateGroups,
+        })
+      );
+    }
+
+    function isPlayerNotAssignedToGround({
+      player,
+      date,
+      time,
+      groundTimeDateGroups,
+    }) {
+      const found = groundTimeDateGroups.find(
+        (g) =>
+          g.date === date &&
+          g.time === time &&
+          (g.firstPlayer === player || g.secondPlayer === player)
+      );
+      return !found;
+    }
+
+    function generatePlayers(noOfPlayers) {
+      return Array.from({ length: noOfPlayers }, (_, i) => i + 1);
+    }
+
+    function generateGrounds(noOfGrounds) {
+      return Array.from({ length: noOfGrounds }, (_, i) => i + 1);
+    }
+
+    function generatePlayerGroups(players) {
+      const groups = [];
+      for (let i = 0; i < players.length; i++) {
+        for (let j = i + 1; j < players.length; j++) {
+          groups.push({
+            firstPlayer: players[i],
+            secondPlayer: players[j],
+            isAssigned: false,
+          });
+        }
+      }
+      return groups;
+    }
+
+    function generateGroundAndTimeGroupsWithDate({
+      playerGroups,
+      grounds,
+      times,
+      start,
+    }) {
+      const groundAndTimeGroups = generateGroundAndTimeGroups(grounds, times);
+      const noOfDates = Math.ceil(
+        playerGroups.length / (grounds.length * times.length)
+      );
+
+      const dates = generateDates(start, noOfDates);
+
+      const groundAndTimeGroupsWithDates = [];
+      for (let i = 0; i < dates.length; i++) {
+        for (let j = 0; j < groundAndTimeGroups.length; j++) {
+          groundAndTimeGroupsWithDates.push({
+            ground: groundAndTimeGroups[j].ground,
+            time: groundAndTimeGroups[j].time,
+            date: dates[i],
+            firstPlayer: null,
+            secondPlayer: null,
+            isAssigned: false,
+          });
+        }
+      }
+
+      return groundAndTimeGroupsWithDates;
+    }
+
+    function generateGroundAndTimeGroups(grounds, times) {
+      const groups = [];
+      for (let i = 0; i < times.length; i++) {
+        for (let j = 0; j < grounds.length; j++) {
+          groups.push({
+            time: times[i],
+            ground: grounds[j],
+          });
+        }
+      }
+      return groups;
+    }
+
+    function generateDates(start, noOfDates) {
+      const startDate = new Date(`${start}T00:00Z`);
+
+      let currentDate = startDate;
+      const dates = [];
+      for (let i = 0; i < noOfDates; i++) {
+        dates.push(extractDate(currentDate));
+        currentDate = generateNextDate(currentDate);
+      }
+
+      return dates;
+    }
+
+    function extractDate(date) {
+      return date.toLocaleDateString().split("/").reverse().join("-");
+    }
+
+    function generateNextDate(date) {
+      return new Date(date.getTime() + 24 * 60 * 60 * 1000);
+    }
+  </script>
+</html>
