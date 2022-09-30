@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arbitary Gear Shift Generator</title>
+    <style>
+      #gear-counter {
+        display: initial;
+        font-weight: 700;
+        font-size: 450px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <span id="gear-counter"></span>
+    <script>
+      function* gearShiftGenerator(gears) {
+        let lastRandomGearIndex = -1;
+        while (true) {
+          const currentRamdonGearIndex = Math.floor(
+            Math.random() * gears.length
+          );
+
+          if (currentRamdonGearIndex == lastRandomGearIndex) {
+            continue;
+          }
+
+          lastRandomGearIndex = currentRamdonGearIndex;
+
+          yield gears[currentRamdonGearIndex];
+        }
+      }
+
+      const gears = ["1", "2", "3", "4", "5", "R"];
+      const gearGenerator = gearShiftGenerator(gears);
+
+      function every(seconds, task) {
+        setInterval(() => {
+          task.call(task, gearGenerator.next().value);
+        }, seconds * 1000);
+      }
+
+      const gearCounter = document.querySelector("#gear-counter");
+
+      every(3, (gear) => {
+        console.log(gear);
+        gearCounter.textContent = gear;
+      });
+    </script>
+  </body>
+</html>
