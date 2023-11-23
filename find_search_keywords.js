@@ -1,39 +1,36 @@
 // Example:
-// co:Test Company id:12342 status:QUEUE
 // {
-//     "co": "",
-//     "id": "",
-//     "status": ""
+//   'co:': [ 'Test Company1,', 'Test Company2' ],
+//   'id:': [ '12342', '123432' ],
+//   'status:': [ 'QUEUE', 'PROCESSING' ]
 // }
 
-let supportedKeywords = ["co:", "id:", "status:"];
-
 function findSearchKeywors(searchText) {
-  let response = {};
-  supportedKeywords.forEach((it) => {
-    response[it] = extractKeyword(it, searchText);
-  });
+  let supportedKeywords = ["co:", "id:", "status:"];
+  let response = supportedKeywords.reduce((object, keyword) => {
+    object[keyword] = [];
+    return object;
+  }, {});
+
+  let joinedKeywords = supportedKeywords.join("|");
+  let tokens = searchText
+    .replaceAll(new RegExp(`(${joinedKeywords})`, "g"), "\n$1\n")
+    .split("\n");
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    for (let j = 0; j < supportedKeywords.length; j++) {
+      const keyword = supportedKeywords[j];
+      if (keyword == token && tokens[i + 1]) {
+        response[keyword].push(tokens[++i].trim());
+        break;
+      }
+    }
+  }
 
   return response;
 }
 
-function extractKeyword(keyword, searchText) {
-  var content = second(searchText.split(`${keyword}`)) || "";
-
-  supportedKeywords.forEach((supportedKeyword) => {
-    content = removeAfter(content, supportedKeyword);
-  });
-
-  return content.trim();
-}
-
-function second(arr) {
-  return arr.splice(1, 1)[0];
-}
-
-function removeAfter(text, keyword) {
-  return text.replaceAll(new RegExp(`${keyword}.*`, "g"), "");
-}
-
-let searchText = "co:Test Company id:12342 id:123432 status:QUEUE";
+let searchText =
+  "co:Test Company1, co:Test Company2 id:12342 id:123432 status:QUEUE status:PROCESSING";
 console.log(findSearchKeywors(searchText));
