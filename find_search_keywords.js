@@ -37,5 +37,6 @@ function findSearchKeywors(searchText) {
   return response;
 }
 
-let searchText = "coPROCESSING";
+let searchText =
+  "co:Test Company1, co:Test Company2 id:12342 id:123432 status:QUEUE status:PROCESSING";
 console.log(findSearchKeywors(searchText));
