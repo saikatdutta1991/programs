@@ -3,7 +3,8 @@
 // {
 //   'co:': [ 'Test Company1,', 'Test Company2' ],
 //   'id:': [ '12342', '123432' ],
-//   'status:': [ 'QUEUE', 'PROCESSING' ]
+//   'status:': [ 'QUEUE', 'PROCESSING' ],
+//   searchKey: 'coPROCESSING'
 // }
 
 function findSearchKeywors(searchText) {
@@ -18,13 +19,17 @@ function findSearchKeywors(searchText) {
     .replaceAll(new RegExp(`(${joinedKeywords})`, "g"), "\n$1\n")
     .split("\n");
 
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    for (let j = 0; j < supportedKeywords.length; j++) {
-      const keyword = supportedKeywords[j];
-      if (keyword == token && tokens[i + 1]) {
-        response[keyword].push(tokens[++i].trim());
-        break;
+  if (tokens.length == 1) {
+    response["searchKey"] = tokens[0];
+  } else {
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+      for (let j = 0; j < supportedKeywords.length; j++) {
+        const keyword = supportedKeywords[j];
+        if (keyword == token && tokens[i + 1]) {
+          response[keyword].push(tokens[++i].trim());
+          break;
+        }
       }
     }
   }
@@ -32,6 +37,5 @@ function findSearchKeywors(searchText) {
   return response;
 }
 
-let searchText =
-  "co:Test Company1, co:Test Company2 id:12342 id:123432 status:QUEUE status:PROCESSING";
+let searchText = "coPROCESSING";
 console.log(findSearchKeywors(searchText));
