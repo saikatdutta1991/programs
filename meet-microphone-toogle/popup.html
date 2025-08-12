@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mic Toggle</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        width: 220px;
+      }
+
+      .header {
+        background-color: #6200ee;
+        color: white;
+        padding: 12px 0;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      button {
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.05);
+        padding: 18px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      button:hover:not(:disabled) {
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.25);
+      }
+
+      button img {
+        width: 36px;
+        height: 36px;
+        transition: opacity 0.3s ease;
+      }
+
+      /* Error message styling */
+      .error-msg {
+        margin-top: 15px;
+        font-size: 13px;
+        color: #d32f2f;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">G-Meet Mic Controller</div>
+
+    <div class="content">
+      <button id="micButton" disabled>
+        <img id="micIcon" src="mic.png" alt="Mic" />
+      </button>
+      <div id="errorMessage" class="error-msg"></div>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

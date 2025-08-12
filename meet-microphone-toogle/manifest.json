@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Google Meet Microphone Toggle",
+  "version": "1.0",
+  "description": "A simple Chrome extension example.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": ["storage", "activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
