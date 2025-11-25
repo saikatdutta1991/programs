@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Directory Listing</title>
+  </head>
+  <body>
+    <h2>Files in this Repo</h2>
+    <ul id="files"></ul>
+
+    <script>
+      const owner = "saikatdutta1991";
+      const repo = "programs";
+
+      fetch(`https://api.github.com/repos/${owner}/${repo}/contents/`)
+        .then((r) => r.json())
+        .then((files) => {
+          const ul = document.getElementById("files");
+          files.forEach((f) => {
+            const li = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = f.html_url;
+            link.textContent = f.name;
+            li.appendChild(link);
+            ul.appendChild(li);
+          });
+        });
+    </script>
+  </body>
+</html>
